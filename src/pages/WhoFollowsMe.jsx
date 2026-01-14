@@ -1,6 +1,6 @@
-import { ArrowLeft, ArrowUpDown, ChevronDown } from "lucide-react";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
-import { Link } from "react-router";
+import ReturnTo from "../components/ReturnTo";
 
 const mockFollowers = [
     { id: "2", name: "Ana Costa" },
@@ -24,15 +24,7 @@ export default function WhoFollowsMe() {
 
     return (
         <>
-            <div className="mb-6">
-                <Link
-                    to="/"
-                    className="inline-flex items-center gap-2 text-[#3483fa] hover:text-[#2968c8] transition-colors"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Voltar para Home
-                </Link>
-            </div>
+            <ReturnTo />
 
             <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
