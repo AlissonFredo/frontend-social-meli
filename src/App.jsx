@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import PostFeed from './pages/PostFeed'
 import WhoFollowsMe from './pages/WhoFollowsMe'
 import WhoDoIFollow from './pages/WhoDoIFollow'
+import CreatePublication from './pages/CreatePublication'
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
           <Route path="users/:userId/followers" element={<WhoFollowsMe />} />
           <Route path="users/:userId/followed" element={<WhoDoIFollow />} />
           <Route path="users/:userId/feed" element={<PostFeed />} />
-          <Route path="publish" element={<h1>Criar publicação</h1>} />
+          <Route path="publish" element={<CreatePublication />} />
         </Route>
       </Routes>
     </BrowserRouter>
