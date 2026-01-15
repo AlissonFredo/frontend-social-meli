@@ -16,6 +16,9 @@ const mockFollowers = [
 export default function WhoFollowsMe() {
     const [order, setOrder] = useState("asc")
 
+    console.log(order);
+    
+
     const getLetrasIniciaisDoNomeESobrenome = (nome) => {
         return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
     }
@@ -28,7 +31,7 @@ export default function WhoFollowsMe() {
                 title="Quem me segue" 
                 subtitle="{8} seguidores" 
                 sortOrder={order}
-                onOrderChange={(newOrder) => setOrder(newOrder)}
+                onSortOrderChange={(newOrder) => setOrder(newOrder)}
             />
 
             <div className="bg-white rounded-lg shadow-sm divide-y">

@@ -36,7 +36,7 @@ export default function PostFeed() {
                 subtitle="Novidades dos vendedores que você segue"
                 type="date"
                 sortOrder={order}
-                onOrderChange={(newOrder) => setOrder(newOrder)}
+                onSortOrderChange={(newOrder) => setOrder(newOrder)}
             />
 
             <div className="space-y-4">

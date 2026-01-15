@@ -26,7 +26,7 @@ export default function WhoDoIFollow() {
                 title="Quem eu sigo"
                 subtitle="6 vendedores seguidos"
                 sortOrder={order}
-                onOrderChange={(newOrder) => setOrder(newOrder)}
+                onSortOrderChange={(newOrder) => setOrder(newOrder)}
             />
 
             <div className="bg-white rounded-lg shadow-sm divide-y">
