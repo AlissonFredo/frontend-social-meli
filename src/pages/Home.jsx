@@ -1,13 +1,27 @@
 import { ChevronRight, Newspaper, PlusCircle, UserCheck, Users } from "lucide-react"
 import { Link } from "react-router"
 import { useUser } from "../contexts/UsersContext";
+import { useEffect, useState } from "react";
+import { getTotalSeguidoresDoVendedor } from "../services/userService";
 
 export default function Home() {
     const { selectedUser } = useUser();
+    const [totalSeguidoresDoVendedor, setTotalSeguidoresDoVendedor] = useState(null)
 
     const getLetrasIniciaisDoNomeESobrenome = (nome) => {
         return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
     }
+
+    useEffect(() => {
+        if (selectedUser && selectedUser.tipo == "SELLER") {
+            const fetchTotalSeguidoresDoVendedor = async () => {
+                const data = await getTotalSeguidoresDoVendedor(selectedUser.id);
+                setTotalSeguidoresDoVendedor(data);
+            }
+
+            fetchTotalSeguidoresDoVendedor();
+        }
+    }, [selectedUser])
 
     const menuItems = [
         {
@@ -15,7 +29,7 @@ export default function Home() {
             description: "Veja quem está seguindo você",
             icon: Users,
             href: `/users/${selectedUser && selectedUser.id}/followers`,
-            count: 0,
+            count: totalSeguidoresDoVendedor ? totalSeguidoresDoVendedor.followersCount : 0,
             isDisabled: selectedUser && selectedUser.tipo == "SELLER"
         },
         {
