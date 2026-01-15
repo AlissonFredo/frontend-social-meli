@@ -9,3 +9,10 @@ export const getTotalSeguidoresDoVendedor = async (sellerId) => {
   const response = await api.get(`/users/${sellerId}/followers/count`);
   return response.data;
 }
+
+export const getSeguidoresDoVendedor = async (sellerId, order = 'asc') => {
+  order = `name_${order}`
+
+  const response = await api.get(`/users/${sellerId}/followers/list?order=${order}`);
+  return response.data;
+}
