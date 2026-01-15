@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
 import ReturnTo from "../components/ReturnTo";
 
@@ -11,6 +12,8 @@ const mockFollowed = [
 ]
 
 export default function WhoDoIFollow() {
+    const [order, setOrder] = useState("asc")
+
     const getLetrasIniciaisDoNomeESobrenome = (nome) => {
         return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
     }
@@ -19,7 +22,12 @@ export default function WhoDoIFollow() {
         <>
             <ReturnTo />
 
-            <CardFilterAscOrDesc title="Quem eu sigo" subtitle="6 vendedores seguidos" />
+            <CardFilterAscOrDesc
+                title="Quem eu sigo"
+                subtitle="6 vendedores seguidos"
+                sortOrder={order}
+                onOrderChange={(newOrder) => setOrder(newOrder)}
+            />
 
             <div className="bg-white rounded-lg shadow-sm divide-y">
                 {mockFollowed.length === 0 ? (

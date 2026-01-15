@@ -1,5 +1,6 @@
 import ReturnTo from "../components/ReturnTo";
 import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
+import { useState } from "react";
 
 const mockFollowers = [
     { id: "2", name: "Ana Costa" },
@@ -13,6 +14,8 @@ const mockFollowers = [
 ]
 
 export default function WhoFollowsMe() {
+    const [order, setOrder] = useState("asc")
+
     const getLetrasIniciaisDoNomeESobrenome = (nome) => {
         return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
     }
@@ -21,7 +24,12 @@ export default function WhoFollowsMe() {
         <>
             <ReturnTo />
 
-            <CardFilterAscOrDesc title = "Quem me segue" subtitle = "{8} seguidores" />
+            <CardFilterAscOrDesc
+                title="Quem me segue" 
+                subtitle="{8} seguidores" 
+                sortOrder={order}
+                onOrderChange={(newOrder) => setOrder(newOrder)}
+            />
 
             <div className="bg-white rounded-lg shadow-sm divide-y">
                 {mockFollowers.length === 0 ? (

@@ -1,8 +1,11 @@
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import ReturnTo from "../components/ReturnTo";
 import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
+import { useState } from "react";
 
 export default function PostFeed() {
+    const [order, setOrder] = useState("desc")
+
     function formatDate(date) {
         const targetDate = date instanceof Date ? date : new Date(date)
 
@@ -28,7 +31,13 @@ export default function PostFeed() {
         <>
             <ReturnTo />
 
-            <CardFilterAscOrDesc title = "Feed de publicações" subtitle = "Novidades dos vendedores que você segue" type = "date" order = "desc" />
+            <CardFilterAscOrDesc
+                title="Feed de publicações"
+                subtitle="Novidades dos vendedores que você segue"
+                type="date"
+                sortOrder={order}
+                onOrderChange={(newOrder) => setOrder(newOrder)}
+            />
 
             <div className="space-y-4">
                 <article

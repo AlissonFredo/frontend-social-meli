@@ -1,9 +1,8 @@
 import { ArrowUpDown, Calendar, ChevronDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-export default function CardFilterAscOrDesc({ title = "", subtitle = "", type = "name", order = "asc" }) {
+export default function CardFilterAscOrDesc({ title = "", subtitle = "", type = "name", sortOrder, onSortOrderChange, }) {
     const [isSelectOpen, setIsSelectOpen] = useState(false)
-    const [sortOrder, setSortOrder] = useState(order)
     const selectRef = useRef(null)
 
     useEffect(() => {
@@ -15,6 +14,11 @@ export default function CardFilterAscOrDesc({ title = "", subtitle = "", type = 
         document.addEventListener("mousedown", handleClickOutside)
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
+
+    const handleSelect = (order) => {
+        onSortOrderChange(order)
+        setIsSelectOpen(false)
+    }
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
@@ -41,20 +45,14 @@ export default function CardFilterAscOrDesc({ title = "", subtitle = "", type = 
                     {isSelectOpen && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
                             <button
-                                onClick={() => {
-                                    setSortOrder("asc")
-                                    setIsSelectOpen(false)
-                                }}
+                                onClick={() => handleSelect("asc")}
                                 className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${sortOrder === "asc" ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`}
                             >
                                 {type == "name" ? "Nome A-Z" : ""}
                                 {type == "date" ? "Mais antigos" : ""}
                             </button>
                             <button
-                                onClick={() => {
-                                    setSortOrder("desc")
-                                    setIsSelectOpen(false)
-                                }}
+                                onClick={() => handleSelect("desc")}
                                 className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${sortOrder === "desc" ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`}
                             >
                                 {type == "name" ? "Nome Z-A" : ""}
