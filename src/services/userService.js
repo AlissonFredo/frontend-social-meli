@@ -16,3 +16,10 @@ export const getSeguidoresDoVendedor = async (sellerId, order = 'asc') => {
   const response = await api.get(`/users/${sellerId}/followers/list?order=${order}`);
   return response.data;
 }
+
+export const getVendedoresSeguidosPorUsuario = async (buyerId, order) => {
+  order = `name_${order}`
+
+  const response = await api.get(`/users/${buyerId}/followed/list?order=${order}`);
+  return response.data;
+}
