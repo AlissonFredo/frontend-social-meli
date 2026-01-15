@@ -3,30 +3,26 @@ import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
 import ReturnTo from "../components/ReturnTo";
 import { Utils } from "../utils";
 import { useUser } from "../contexts/UsersContext";
-import { getVendedoresSeguidosPorUsuario } from "../services/userService";
-
-const mockFollowed = [
-    { id: "10", name: "Tech Store BR" },
-    { id: "11", name: "Casa & Decoração" },
-    { id: "12", name: "Fashion Plus" },
-    { id: "13", name: "Esporte Total" },
-    { id: "14", name: "Pet World" },
-    { id: "15", name: "Auto Parts BR" }
-]
+import { getVendedoresSeguidosPorUsuario, unfollowSeller } from "../services/userService";
 
 export default function WhoDoIFollow() {
     const { selectedUser } = useUser();
     const [order, setOrder] = useState("asc")
     const [seguidos, setSeguidos] = useState([])
 
+    const fetchVendedoresSeguidosPorUsuario = async () => {
+        const data = await getVendedoresSeguidosPorUsuario(selectedUser.id, order);
+        setSeguidos(data.followed)
+    }
+
     useEffect(() => {
-            const fetchVendedoresSeguidosPorUsuario = async () => {
-                const data = await getVendedoresSeguidosPorUsuario(selectedUser.id, order);
-                setSeguidos(data.followed)
-            }
-    
-            fetchVendedoresSeguidosPorUsuario()
-        }, [selectedUser, order])
+        fetchVendedoresSeguidosPorUsuario()
+    }, [selectedUser, order])
+
+    const unfollow = async (buyerId, sellerId) => {
+        const data = await unfollowSeller(buyerId, sellerId);
+        if (data == "sucesso") fetchVendedoresSeguidosPorUsuario()
+    }
 
     return (
         <>
@@ -55,7 +51,10 @@ export default function WhoDoIFollow() {
                                 <h3 className="font-medium text-gray-900">{seguido.userName}</h3>
                             </div>
 
-                            <button className="px-4 py-2 text-sm text-[#3483fa] border border-[#3483fa] rounded-lg hover:bg-[#3483fa] hover:text-white transition-colors">
+                            <button
+                                onClick={() => unfollow(selectedUser.id, seguido.userId)}
+                                className="px-4 py-2 text-sm text-[#3483fa] border border-[#3483fa] rounded-lg hover:bg-[#3483fa] hover:text-white transition-colors"
+                            >
                                 Deixar de seguir
                             </button>
                         </div>

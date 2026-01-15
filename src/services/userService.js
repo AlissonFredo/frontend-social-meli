@@ -23,3 +23,8 @@ export const getVendedoresSeguidosPorUsuario = async (buyerId, order) => {
   const response = await api.get(`/users/${buyerId}/followed/list?order=${order}`);
   return response.data;
 }
+
+export const unfollowSeller = async (buyerId, sellerId) => {
+  const response = await api.delete(`/users/${buyerId}/unfollow/${sellerId}`);
+  return response.data;
+}
