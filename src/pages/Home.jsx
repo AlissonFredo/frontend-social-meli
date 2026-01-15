@@ -3,14 +3,11 @@ import { Link } from "react-router"
 import { useUser } from "../contexts/UsersContext";
 import { useEffect, useState } from "react";
 import { getTotalSeguidoresDoVendedor } from "../services/userService";
+import { Utils } from "../utils";
 
 export default function Home() {
     const { selectedUser } = useUser();
     const [totalSeguidoresDoVendedor, setTotalSeguidoresDoVendedor] = useState(null)
-
-    const getLetrasIniciaisDoNomeESobrenome = (nome) => {
-        return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
-    }
 
     useEffect(() => {
         if (selectedUser && selectedUser.tipo == "SELLER") {
@@ -61,7 +58,7 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                     <div className="h-16 w-16 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                         <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
-                            {getLetrasIniciaisDoNomeESobrenome(selectedUser ? selectedUser.nome : "Mercado Livre")}
+                            {Utils.getLetrasIniciaisDoNomeESobrenome(selectedUser ? selectedUser.nome : "Mercado Livre")}
                         </div>
                         <span className="hidden text-white text-xl font-medium">{selectedUser ? selectedUser.nome.charAt(0) : "Mercado Livre"}</span>
                     </div>

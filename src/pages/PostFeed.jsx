@@ -2,6 +2,7 @@ import { Heart, MessageCircle, Share2 } from "lucide-react";
 import ReturnTo from "../components/ReturnTo";
 import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
 import { useState } from "react";
+import { Utils } from "../utils";
 
 export default function PostFeed() {
     const [order, setOrder] = useState("desc")
@@ -23,10 +24,6 @@ export default function PostFeed() {
         return price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
     }
 
-    const getLetrasIniciaisDoNomeESobrenome = (nome) => {
-        return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
-    }
-
     return (
         <>
             <ReturnTo />
@@ -46,7 +43,7 @@ export default function PostFeed() {
                     <div className="p-4 flex items-center gap-3 border-b">
                         <div className="h-10 w-10 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                             <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
-                                {getLetrasIniciaisDoNomeESobrenome("Tech Store BR")}
+                                {Utils.getLetrasIniciaisDoNomeESobrenome("Tech Store BR")}
                             </div>
 
                             <span className="hidden text-white font-medium">{"Tech Store BR".charAt(0)}</span>

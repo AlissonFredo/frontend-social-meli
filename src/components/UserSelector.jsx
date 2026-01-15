@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useUsersCache } from "../hooks/useUsersCache";
 import { useUser } from "../contexts/UsersContext";
+import { Utils } from "../utils";
 
 export default function UserSelector() {
     const dropdownRef = useRef(null)
@@ -9,10 +10,6 @@ export default function UserSelector() {
 
     const { users, isLoading } = useUsersCache();
     const { selectedUser, setSelectedUser } = useUser();
-
-    const getLetrasIniciaisDoNomeESobrenome = (nome) => {
-        return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
-    }
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -34,7 +31,7 @@ export default function UserSelector() {
                 >
                     <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                         <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
-                            {getLetrasIniciaisDoNomeESobrenome(selectedUser ? selectedUser.nome : "Entrar")}
+                            {Utils.getLetrasIniciaisDoNomeESobrenome(selectedUser ? selectedUser.nome : "Entrar")}
                         </div>
                         <span className="hidden text-white font-medium">{(selectedUser ? selectedUser.nome : "Entrar").charAt(0)}</span>
                     </div>
@@ -56,7 +53,7 @@ export default function UserSelector() {
                                     onClick={() => setSelectedUser(user)}
                                 >
                                     <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center">
-                                        <span className="text-white text-sm font-medium">{getLetrasIniciaisDoNomeESobrenome(user.nome)}</span>
+                                        <span className="text-white text-sm font-medium">{Utils.getLetrasIniciaisDoNomeESobrenome(user.nome)}</span>
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-medium text-gray-900">{user.nome}</span>

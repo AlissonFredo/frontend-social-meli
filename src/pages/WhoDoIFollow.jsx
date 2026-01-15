@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
 import ReturnTo from "../components/ReturnTo";
+import { Utils } from "../utils";
 
 const mockFollowed = [
     { id: "10", name: "Tech Store BR" },
@@ -13,10 +14,6 @@ const mockFollowed = [
 
 export default function WhoDoIFollow() {
     const [order, setOrder] = useState("asc")
-
-    const getLetrasIniciaisDoNomeESobrenome = (nome) => {
-        return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
-    }
 
     return (
         <>
@@ -37,7 +34,7 @@ export default function WhoDoIFollow() {
                         <div key={followed.id} className="p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
                             <div className="h-12 w-12 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                                 <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
-                                    {getLetrasIniciaisDoNomeESobrenome(followed.name)}
+                                    {Utils.getLetrasIniciaisDoNomeESobrenome(followed.name)}
                                 </div>
                                 <span className="hidden text-white font-medium">{followed.name.charAt(0)}</span>
                             </div>

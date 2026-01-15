@@ -3,15 +3,12 @@ import CardFilterAscOrDesc from "../components/CardFilterAscOrDesc";
 import { useEffect, useState } from "react";
 import { useUser } from "../contexts/UsersContext";
 import { getSeguidoresDoVendedor } from "../services/userService";
+import { Utils } from "../utils";
 
 export default function WhoFollowsMe() {
     const { selectedUser } = useUser();
     const [order, setOrder] = useState("asc")
     const [seguidores, setSeguidores] = useState([])
-
-    const getLetrasIniciaisDoNomeESobrenome = (nome) => {
-        return nome.trim().split(/\s+/).map((word) => word[0]).slice(0, 2).join("").toUpperCase()
-    }
 
     useEffect(() => {
         const fetchSeguidoresDoVendedor = async () => {
@@ -41,7 +38,7 @@ export default function WhoFollowsMe() {
                         <div key={seguidor.userId} className="p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
                             <div className="h-12 w-12 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                                 <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
-                                    {getLetrasIniciaisDoNomeESobrenome(seguidor.userName)}
+                                    {Utils.getLetrasIniciaisDoNomeESobrenome(seguidor.userName)}
                                 </div>
                                 <span className="hidden text-white font-medium">{seguidor.userName.charAt(0)}</span>
                             </div>
