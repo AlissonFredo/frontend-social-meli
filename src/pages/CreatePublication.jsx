@@ -1,9 +1,26 @@
 import { useRef, useState } from "react";
 import ReturnTo from "../components/ReturnTo";
 import { ChevronDown, Loader2 } from "lucide-react";
+import { postCadastrarProduto } from "../services/productService";
+import { useUser } from "../contexts/UsersContext";
 
 export default function CreatePublication() {
+    const { selectedUser } = useUser();
     const [formState, setFormState] = useState("idle")
+    const [errorMessage, setErrorMessage] = useState([])
+
+    console.log(errorMessage);
+
+
+    const [formData, setFormData] = useState({
+        category: "",
+        price: "",
+        productName: "",
+        type: "",
+        brand: "",
+        color: "",
+        notes: ""
+    })
 
     const [isCategoryOpen, setIsCategoryOpen] = useState(false)
     const categoryRef = useRef(null)
@@ -11,37 +28,46 @@ export default function CreatePublication() {
     const [isTypeOpen, setIsTypeOpen] = useState(false)
     const typeRef = useRef(null)
 
-
     const categories = [
-        "Eletrônicos",
-        "Moda",
-        "Casa e Decoração",
-        "Esportes",
-        "Automotivo",
-        "Animais",
-        "Brinquedos",
-        "Livros",
-        "Beleza",
-        "Outros",
+        { text: "Eletrônicos", value: 1 },
+        { text: "Moda", value: 2 },
+        { text: "Casa e Decoração", value: 3 },
+        { text: "Esportes", value: 4 },
+        { text: "Automotivo", value: 5 },
+        { text: "Animais", value: 6 },
+        { text: "Brinquedos", value: 7 },
+        { text: "Livros", value: 8 },
+        { text: "Beleza", value: 9 },
+        { text: "Outros", value: 10 }
     ]
 
     const types = [
-        "FASHION_ACCESSORIES",
-        "ELECTRONICS_COMPUTERS",
-        "HOME_FURNITURE_DECOR",
-        "APPLIANCES",
-        "BEAUTY_PERSONAL_CARE",
-        "GROCERY_BEVERAGES",
-        "HEALTH_WELLNESS",
-        "SPORTS_OUTDOORS",
-        "TOYS_BABY_KIDS",
-        "PET_SUPPLIES",
-        "AUTOMOTIVE",
-        "TOOLS_HOME_IMPROVEMENT",
-        "OFFICE_SCHOOL_SUPPLIES",
-        "VIDEO_GAMES",
-        "BOOKS_MUSIC_MOVIES",
-        "OTHER"
+        { value: "FASHION_ACCESSORIES", text: "Acessorios De Moda" },
+        { value: "ELECTRONICS_COMPUTERS", text: "Eletronicos e Computadores" },
+        { value: "HOME_FURNITURE_DECOR", text: "Moveis, Decoracao e Casa" },
+        { value: "APPLIANCES", text: "Eletrodomesticos" },
+        { value: "BEAUTY_PERSONAL_CARE", text: "Beleza e Cuidado Pessoal" },
+        { value: "GROCERY_BEVERAGES", text: "Alimentos e Bebidas" },
+        { value: "HEALTH_WELLNESS", text: "Saude e Bem Estar" },
+        { value: "SPORTS_OUTDOORS", text: "Esportes ao Ar Livre" },
+        { value: "TOYS_BABY_KIDS", text: "Brinquedos de Bebes e Criancas" },
+        { value: "PET_SUPPLIES", text: "Produtos Pet" },
+        { value: "AUTOMOTIVE", text: "Automotivo" },
+        { value: "TOOLS_HOME_IMPROVEMENT", text: "Ferramentas Melhorias Casa" },
+        { value: "OFFICE_SCHOOL_SUPPLIES", text: "Materiais de Escritorio e Escola" },
+        { value: "VIDEO_GAMES", text: "Video Jogos" },
+        { value: "BOOKS_MUSIC_MOVIES", text: "Livros, Musica e Filmes" },
+        { value: "OTHER", text: "Outros" }
+    ]
+
+    const mapInputs = [
+        { key: "category", input: "Categoria" },
+        { key: "price", input: "Preço" },
+        { key: "product.productName", input: "Título do produto" },
+        { key: "product.type", input: "Tipo" },
+        { key: "product.brand", input: "Marca" },
+        { key: "product.color", input: "Cor" },
+        { key: "product.notes", input: "Descrição" }
     ]
 
     const handleSelectChange = (name, value) => {
@@ -53,6 +79,65 @@ export default function CreatePublication() {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
+    const validarCamposObrigatorios = () => {
+        let errors = []
+        if (!formData.category) errors.push({ field: "category", message: "O campo é obrigatorio." })
+        if (!formData.price) errors.push({ field: "price", message: "O campo é obrigatorio." })
+        if (!formData.productName) errors.push({ field: "product.productName", message: "O campo é obrigatorio." })
+        if (!formData.type) errors.push({ field: "product.type", message: "O campo é obrigatorio." })
+        if (!formData.brand) errors.push({ field: "product.brand", message: "O campo é obrigatorio." })
+        if (!formData.color) errors.push({ field: "product.color", message: "O campo é obrigatorio." })
+        if (errors.length > 0) setErrorMessage(errors)
+        return errors.length > 0
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setFormState("loading")
+
+        if (validarCamposObrigatorios()) {
+            setFormState("error")
+            return
+        }
+
+        let post = {
+            userId: selectedUser.id,
+            category: formData.category,
+            price: formData.price,
+            product: {
+                productName: formData.productName,
+                type: formData.type,
+                brand: formData.brand,
+                color: formData.color
+            },
+        }
+
+        if (formData.notes) {
+            post.product.notes = formData.notes
+        }
+
+        const result = await postCadastrarProduto(post)
+
+        console.log(result);
+
+        if (result.status === 200) {
+            setFormState("success")
+
+            setFormData({
+                category: "",
+                price: "",
+                productName: "",
+                type: "",
+                brand: "",
+                color: "",
+                notes: ""
+            })
+        } else {
+            setFormState("error")
+            setErrorMessage(result.errors)
+        }
+    }
+
     return (
         <>
             <ReturnTo />
@@ -62,33 +147,33 @@ export default function CreatePublication() {
                 <p className="text-gray-500 mt-1">Preencha os dados do produto que deseja vender</p>
             </div>
 
-            <form onSubmit={() => { }} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
                     <div className="space-y-2">
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
                             Título do produto *
                         </label>
                         <input
-                            id="title"
-                            name="title"
+                            id="productName"
+                            name="productName"
                             type="text"
                             placeholder="Ex: iPhone 15 Pro Max 256GB Novo Lacrado"
-                            value={""}
-                            onChange={() => { }}
+                            value={formData.productName}
+                            onChange={handleInputChange}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
                             Descrição
                         </label>
                         <textarea
-                            id="description"
-                            name="description"
+                            id="notes"
+                            name="notes"
                             placeholder="Descreva seu produto com detalhes..."
-                            value={""}
-                            onChange={() => { }}
+                            value={formData.notes}
+                            onChange={handleInputChange}
                             rows={4}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent resize-none"
                         />
@@ -103,14 +188,8 @@ export default function CreatePublication() {
                                     onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                                     className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#3483fa] text-left"
                                 >
-                                    <span
-                                        className={
-                                            /* formData.category ? "text-gray-900" : "text-gray-400" */
-                                            "text-gray-400"
-                                        }
-                                    >
-                                        {/* {formData.category || "Selecione uma categoria"} */}
-                                        {"Selecione uma categoria"}
+                                    <span className={formData.category ? "text-gray-900" : "text-gray-400"} >
+                                        {formData.category ? categories.find(valor => valor.value == formData.category).text : "Selecione uma categoria"}
                                     </span>
                                     <ChevronDown
                                         className={`h-4 w-4 text-gray-400 transition-transform ${isCategoryOpen ? "rotate-180" : ""}`}
@@ -121,16 +200,15 @@ export default function CreatePublication() {
                                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 max-h-60 overflow-auto">
                                         {categories.map((category) => (
                                             <button
-                                                key={category}
+                                                key={category.value}
                                                 type="button"
                                                 onClick={() => {
-                                                    handleSelectChange("category", category)
+                                                    handleSelectChange("category", category.value)
                                                     setIsCategoryOpen(false)
                                                 }}
-                                                /* className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${formData.category === category ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`} */
-                                                className={`w-full px-4 py-2 text-left hover:bg-gray-100 $text-gray-700`}
+                                                className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${formData.category === category.value ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`}
                                             >
-                                                {category}
+                                                {category.text}
                                             </button>
                                         ))}
                                     </div>
@@ -147,13 +225,9 @@ export default function CreatePublication() {
                                     className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#3483fa] text-left"
                                 >
                                     <span
-                                        className={
-                                            /* formData.category ? "text-gray-900" : "text-gray-400" */
-                                            "text-gray-400"
-                                        }
+                                        className={formData.type ? "text-gray-900" : "text-gray-400"}
                                     >
-                                        {/* {formData.category || "Selecione uma categoria"} */}
-                                        {"Selecione um tipo"}
+                                        {formData.type ? types.find(value => value.value == formData.type).text : "Selecione um tipo"}
                                     </span>
                                     <ChevronDown
                                         className={`h-4 w-4 text-gray-400 transition-transform ${isTypeOpen ? "rotate-180" : ""}`}
@@ -164,16 +238,15 @@ export default function CreatePublication() {
                                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 max-h-60 overflow-auto">
                                         {types.map((type) => (
                                             <button
-                                                key={type}
+                                                key={type.value}
                                                 type="button"
                                                 onClick={() => {
-                                                    handleSelectChange("type", type)
+                                                    handleSelectChange("type", type.value)
                                                     setIsTypeOpen(false)
                                                 }}
-                                                /* className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${formData.category === category ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`} */
-                                                className={`w-full px-4 py-2 text-left hover:bg-gray-100 $text-gray-700`}
+                                                className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${formData.type === type.value ? "bg-gray-50 text-[#3483fa]" : "text-gray-700"}`}
                                             >
-                                                {type}
+                                                {type.text}
                                             </button>
                                         ))}
                                     </div>
@@ -192,8 +265,8 @@ export default function CreatePublication() {
                                 name="color"
                                 type="text"
                                 placeholder="Descreva a cor do seu produto..."
-                                value={""}
-                                onChange={() => { }}
+                                value={formData.color}
+                                onChange={handleInputChange}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent"
                             />
                         </div>
@@ -207,8 +280,8 @@ export default function CreatePublication() {
                                 name="brand"
                                 type="text"
                                 placeholder="Descreva a marca do seu produto..."
-                                value={""}
-                                onChange={() => { }}
+                                value={formData.brand}
+                                onChange={handleInputChange}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent"
                             />
                         </div>
@@ -227,51 +300,36 @@ export default function CreatePublication() {
                                 step="0.01"
                                 min="0"
                                 placeholder="0,00"
-                                value={0}
-                                onChange={handleInputChange}
-                                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between py-3 border-t">
-                        <div>
-                            <label htmlFor="freeShipping" className="font-medium text-gray-900">
-                                Promoção
-                            </label>
-                            <p className="text-sm text-gray-500">Ofereça promoções para atrair mais compradores</p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setFormData((prev) => ({ ...prev, freeShipping: !true }))}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${false ? "bg-[#3483fa]" : "bg-gray-300"}`}
-                        >
-                            <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${false ? "translate-x-6" : "translate-x-1"}`}
-                            />
-                        </button>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="discount" className="block text-sm font-medium text-gray-700">
-                            Desconto
-                        </label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
-                            <input
-                                id="discount"
-                                name="discount"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="0,00"
-                                value={0}
+                                value={formData.price}
                                 onChange={handleInputChange}
                                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3483fa] focus:border-transparent"
                             />
                         </div>
                     </div>
                 </div>
+
+                {formState === "error" && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        {errorMessage.map((erro, key) => (
+                            <p key={key}>{`(${mapInputs.find(value => value.key == erro.field).input}): ${erro.message}`}</p>
+                        ))}
+
+                    </div>
+                )}
+
+                {formState === "success" && (
+                    <div className="relative bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                        <button
+                            type="button"
+                            className="absolute top-2 right-2 text-green-700 hover:text-green-900"
+                            aria-label="Fechar alerta de sucesso"
+                            onClick={() => setFormState("idle")}
+                        >
+                            ×
+                        </button>
+                        <p>Cadastro realizado com sucesso!</p>
+                    </div>
+                )}
 
                 <div className="bg-white rounded-lg shadow-sm p-6">
                     <button
