@@ -56,8 +56,8 @@ export default function PostFeed() {
                         <div className="p-8 text-center text-gray-500">Nenhuma postagem encontrada</div>
                     </div>
                 ) : (
-                    posts.map(post => (
-                        <article key={post.seller.userId} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    posts.map((post, key) => (
+                        <article key={key} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                             <div className="p-4 flex items-center gap-3 border-b">
                                 <div className="h-10 w-10 rounded-full bg-[#3483fa] flex items-center justify-center overflow-hidden">
                                     <div className="h-8 w-8 rounded-full bg-[#3483fa] flex items-center justify-center text-white font-medium">
