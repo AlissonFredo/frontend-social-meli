@@ -7,7 +7,7 @@ import { Utils } from "../utils";
 
 export default function Home() {
     const { selectedUser } = useUser();
-    const [totalSeguidoresDoVendedor, setTotalSeguidoresDoVendedor] = useState(null)
+    const [totalSeguidoresDoVendedor, setTotalSeguidoresDoVendedor] = useState(0)
 
     useEffect(() => {
         if (selectedUser && selectedUser.tipo == "SELLER") {
@@ -17,6 +17,8 @@ export default function Home() {
             }
 
             fetchTotalSeguidoresDoVendedor();
+        } else {
+            setTotalSeguidoresDoVendedor(0)
         }
     }, [selectedUser])
 
